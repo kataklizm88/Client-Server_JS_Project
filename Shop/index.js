@@ -1,27 +1,14 @@
-const goods = [
-	{ title: 'Shirt', price: 150 },
-	{ title: 'Socks', price: 50 },
-	{ title: 'Jacket', price: 350 },
-	{ title: 'Shoes' },
-	{ title: 'Shirt', price: 150 },
-	{ title: 'Socks', price: 50 },
-	{ title: 'Jacket', price: 350 },
-	{ title: 'Shoes' },
-	{ title: 'Shirt', price: 150 },
-	{ title: 'Socks', price: 50 },
-	{ title: 'Jacket', price: 350 },
-
-];
+const URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json'
 
 
 class GoodsItem {
-    constructor ({title="Товар скоро появится", price="Товара нет в наличии"}){
-        this.title = title;
+    constructor ({product_name="Товар скоро появится", price="Товара нет в наличии"}){
+        this.product_name = product_name;
         this.price = price;
     }
     render (){
         return `<div class="col-sm-3 p-4 border bg-warning"  >
-			        <h5 class="card-title">${this.title}</h5>
+			        <h5 class="card-title">${this.product_name}</h5>
 			         <p class="card-text">${this.price}</p>
 			        <a href="#" class="btn btn-primary">Купить товар</a>
 		        </div>`;
@@ -30,18 +17,31 @@ class GoodsItem {
 
 
 class RenderGoodsList {
-   constructor(list=goods){
-       this.list = list
-       this.goodsList = this.list.map((item) => (new GoodsItem(item)).render())
+   items = []
+
+   fetchGoods(url){
+    return new Promise((resolve) => {
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', url)
+        xhr.send()
+        xhr.onload = function(){
+            resolve(JSON.parse(xhr.response))
+        }
+    })
    }
 
-   render(){
-       document.querySelector('.row').innerHTML = this.goodsList.join('');
-   }
+  render(data) {
+    const goods = data.map(item => {
+      const goodItem = new GoodsItem(item);
+      return goodItem.render()
+    }).join('');
+  
+    document.querySelector('.row').innerHTML = goods;
+  }
 
-   getSumm(){
+   getSumm(data){
         let sum = 0;
-        const sum_price = this.list.map(item => item.price)
+        const sum_price = data.map(item => item.price)
         for (var i = 0; i < sum_price.length; i++){
             if (isNaN(sum_price[i]) === false) {
                 sum += sum_price[i]
@@ -54,5 +54,7 @@ class RenderGoodsList {
 
 
 const goodsList = new RenderGoodsList();
-goodsList.render()
-goodsList.getSumm()
+goodsList.fetchGoods(URL).then((data) =>{
+    goodsList.render(data);
+    goodsList.getSumm(data);
+})

@@ -1,5 +1,9 @@
 const URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/catalogData.json'
 
+const service = (url) => fetch(url)
+    .then((res)=> {
+        return res.json()
+     })
 
 class GoodsItem {
     constructor ({product_name="Товар скоро появится", price="Товара нет в наличии"}){
@@ -19,19 +23,16 @@ class GoodsItem {
 class RenderGoodsList {
    items = []
 
-   fetchGoods(url){
-    return new Promise((resolve) => {
-        let xhr = new XMLHttpRequest()
-        xhr.open('GET', url)
-        xhr.send()
-        xhr.onload = function(){
-            resolve(JSON.parse(xhr.response))
-        }
-    })
+   fetchGoods(){
+       return service(URL).then((data)=>{
+           this.items = data
+           console.log(data)
+       })
+
    }
 
-  render(data) {
-    const goods = data.map(item => {
+  render() {
+    const goods = this.items.map(item => {
       const goodItem = new GoodsItem(item);
       return goodItem.render()
     }).join('');
@@ -39,9 +40,9 @@ class RenderGoodsList {
     document.querySelector('.row').innerHTML = goods;
   }
 
-   getSumm(data){
+   getSumm(){
         let sum = 0;
-        const sum_price = data.map(item => item.price)
+        const sum_price = this.items.map(item => item.price)
         for (var i = 0; i < sum_price.length; i++){
             if (isNaN(sum_price[i]) === false) {
                 sum += sum_price[i]
@@ -54,7 +55,7 @@ class RenderGoodsList {
 
 
 const goodsList = new RenderGoodsList();
-goodsList.fetchGoods(URL).then((data) =>{
-    goodsList.render(data);
-    goodsList.getSumm(data);
+goodsList.fetchGoods().then(() =>{
+    goodsList.render();
+    goodsList.getSumm();
 })

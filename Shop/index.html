@@ -4,17 +4,16 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+   <link rel="stylesheet" href="style.css">
    <title>eShop</title>
 
 </head>
 <body>
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-	<script src="tst.js" defer></script>
+	<script src="index.js" defer></script>
 	<div id="app">
 		<header>
-			<nav class="navbar navbar-expand-lg navbar-light bg-info">
-			<div class="container-fluid">
+			<nav-comp>
 				<a class="navbar-brand" href="#">Navbar</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -27,61 +26,27 @@
 					<li class="nav-item">
 					<a class="nav-link" href="#">Link</a>
 					</li>
-					<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						Dropdown
-					</a>
-					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<li><a class="dropdown-item" href="#">Action</a></li>
-						<li><a class="dropdown-item" href="#">Another action</a></li>
-						<li><hr class="dropdown-divider"></li>
-						<li><a class="dropdown-item" href="#">Something else here</a></li>
-					</ul>
-					</li>
-					<li class="nav-item">
-					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-					</li>
 				</ul>
-				<div class="d-flex">
+				<search @search-click="filterGoods" >
 					<input type="text" class="form-control me-2" placeholder="Search" aria-label="Search" v-model="searchline">
-					<button class="btn btn-outline-success" type="button" @:click="filterGoods">Искать</button>
-				</div>
+				</search>
 				<div class="actions">
-					<button class="btn btn-outline-dark" type="button" v-on:click="visibleCartOn" >Корзина</button>
-				</div>
-				</div>
-			</div>
-			</nav>
+					<custom-button  class="btn btn-outline-dark" @some_click="setVisionCard" button_name='Корзина'> </custom-button>
+				</div>		
+			</nav-comp>
 		</header>
-		<main>
-
-			<div class="container" >
-				<div class="card text-center border-primary mb-3" v-if="isVisibleCart" >
-					<button type="button" class="btn-close" aria-label="Close" style="align-self: self-end;" v-on:click="visibleCartOff"></button>
-					<div class="card-header">
-					 Окно корзины
-					</div>
-					<div class="card-body">
-					 <h5 class="card-title">Особое обращение с заголовком</h5>
-					 <a href="#" class="btn btn-primary" v-on:click="visibleCartOff">Закрыть</a>
-					 </div>
-				</div>
-				<h3> {{searchline }}</h3>
-				<div class="row gy-4"  style="margin-top: 50px"  v-if="items.length">
-						<div class="col-sm-3 p-4 border bg-warning"  v-for="item in items">
-							<h5 class="card-title">{{item.product_name}}</h5>
-							<p class="card-text">{{item.price}}</p>
-							<a href="#" class="btn btn-primary">Купить товар</a>
-						</div>
-				</div>
-				<div class="row gy-4"  style="margin-top: 50px"  v-else>
-					<h1 class="card-text">Нет данных </h1>
-				</div>
-
-				<div class="summ "></div>
-
-		</main>
+		<main-comp>
+            <div class="row gy-4"  style="margin-top: 50px"  v-if="items.length" >
+            	<item-card v-for="item in filteredItems" :item=item> </item-card>
+            </div>
+            <div class="summ" >
+             	<p> Сумма всех товаров: {{get_total}} </p>
+             	<h3> {{searchline }}</h3>
+            </div>
+		</main-comp>
+		<basket v-if="isVisibleCart">
+			<basket-item @my_click="setVisionCard"> </basket-item>
+		</basket>
 	</div>
-
 </body>
 </html>

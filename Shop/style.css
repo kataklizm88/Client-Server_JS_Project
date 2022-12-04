@@ -8,7 +8,7 @@ html, body, #root {
     height: 100%;
 }
 
-#app {
+#root {
     display: grid;
     grid-template-rows: max-content auto;
     gap: 40px;
@@ -95,4 +95,7 @@ button {
 
 .basket-card__content {
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }

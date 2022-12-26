@@ -1,4 +1,5 @@
 venv
-server/package-lock.json
-server/node_modules
+project/server/package-lock.json
+project/server/node_modules
 .idea
+

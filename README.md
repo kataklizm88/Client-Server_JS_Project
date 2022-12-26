@@ -1,1 +1,1 @@
-#Study project of course "Advanced Javascript"
+#Client - Server application on Javascript
